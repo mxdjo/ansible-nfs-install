@@ -1,0 +1,18 @@
+---
+ - hosts: '{{ nfs-client }}'
+   become: yes
+   tasks:
+     - name: install nfs-utils
+       yum:
+          name: nfs-utils
+          state: present
+
+     - name: Create the mount directory
+       file: 
+        path: /mnt/mountpoint
+        state: directory
+        mode: '0775'
+
+     - name: Mount volume
+       shell:  mount "{{ hostvars['server']['ansible_eth0']['ipv4']['address'] }}"
+:"{{ hostvars['server']['ansible_env']['HOME'] }}"/nfs_test /mnt/mountpoint
