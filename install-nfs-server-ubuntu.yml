@@ -1,0 +1,33 @@
+---
+- hosts: '{{ nfs-server }}'
+  become: yes
+  tasks:
+    - name: install nfs-utils
+      apt: 
+        name: nfs-utils 
+        state: present
+
+    - name: Create a mount directory
+      file:
+        path: "{{ ansible_env.HOME }}"/nfs_test
+        state: directory
+        owner: "{{ ansible_env.USER }}" 
+        mode: '0775'
+
+    - name: enable services rpcbind nfslock nfs
+      service:
+        name: "{{ item }}"
+        enabled: yes
+      with_items:
+        - rpcbind
+        - nfslock
+        - nfs
+    - name: Copy exports file.
+      template:
+        src: ./exports.j2
+        dest: /etc/exports
+        owner: root
+        group: root
+        mode: 0644
+    - name: Reload NFS 
+      shell: systemctl reload nfs;exportfs -a

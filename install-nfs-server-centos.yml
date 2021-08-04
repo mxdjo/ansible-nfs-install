@@ -1,6 +1,7 @@
 ---
-- hosts: '{{ nfs-server }}'
+- hosts: "{{ nfs_server }}"
   become: yes
+  become_method: sudo
   tasks:
     - name: install nfs-utils
       yum: 
@@ -9,7 +10,7 @@
 
     - name: Create a mount directory
       file:
-        path: "{{ ansible_env.HOME }}"/nfs_test
+        path: "{{ ansible_env.HOME +'/nfs_test:' }}"
         state: directory
         owner: "{{ ansible_env.USER }}" 
         mode: '0775'

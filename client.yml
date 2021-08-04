@@ -1,0 +1,7 @@
+- hosts: all
+  tasks:
+    - include: install-nfs-client-ubuntu.yml
+      when: ansible_os_family == "Ubuntu"
+    
+    - include: install-nfs-client-centos.yml
+      when: ansible_os_family == "RedHat"

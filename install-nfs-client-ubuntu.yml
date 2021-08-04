@@ -1,0 +1,25 @@
+---
+ - hosts: '{{ nfs_server }}'
+   gather_facts: true
+
+
+ - hosts: '{{ nfs_client }}'
+   become: yes
+   become_method: sudo
+   tasks:
+     - name: install nfs-utils
+       apt:
+          name: nfs-utils
+          state: present
+
+
+     - name: Create the mount directory
+       file: 
+        path: /mnt/mountpoint
+        state: directory
+        mode: '0775'
+
+     - name: Mount volume
+       shell:  mount "{{ hostvars[nfs_server]['ansible_'+net_interface]['ipv4']['address'] }}":"{{ hostvars[nfs_client]['ansible_env']['HOME'] }}"/nfs_test /mnt/mountpoint
+
+
